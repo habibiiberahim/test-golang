@@ -33,31 +33,28 @@ type ResponseApi struct {
 }
 
 func main() {
-	url := "https://data.gov.sg/api/action/datastore_search?resource_id=eb8b932c-503c-41e7-b513-114cffbe2338&limit=1"
+	url := "https://data.gov.sg/api/action/datastore_search?resource_id=eb8b932c-503c-41e7-b513-114cffbe2338&limit=100"
 	response := getData(url)
-	fmt.Println(response)
+	arrayRecord := response.Result.Records
+	for _, item := range arrayRecord {
+		fmt.Print(item.TypeOfCourse + " : ")
+		fmt.Println(item.Year)
+	}
 
 }
 
-func getData(url string) string {
+func getData(url string) *ResponseApi {
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	bodyByte, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Can't read data body")
 	}
 
-	json.Unmarshal(data, ResponseApi{})
-	return string(data)
+	var Resp ResponseApi
+	json.Unmarshal(bodyByte, &Resp)
+	return &Resp
 }
-
-// func worker() {
-
-// }
-
-// func job() {
-
-// }
